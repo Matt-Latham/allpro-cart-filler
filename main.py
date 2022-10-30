@@ -28,8 +28,8 @@ driver.get("https://warehouse.allprocorp.com/midwest/quickorder")
 WebDriverWait(driver, 10).until(lambda x: "Quick order" in driver.title)
 WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
 
-#setting up cart for the amount of items
-#needed to be in it's own open block or else it would hang after adding rows
+#setting up cart for the amount of items needed
+#this needed to be in it's own open block or else it would hang after adding rows
 with open('order.csv', newline='') as csvfile:
     row_count = csv.reader(csvfile, delimiter=',', quotechar='|')
     rows = sum(1 for line in row_count)
@@ -42,7 +42,7 @@ with open('order.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     i = 1
     for row in spamreader:
-        #adding sku
+        #add sku to text box
         driver.find_element_by_xpath("//*[@id='pcode" + str(i) + "']").send_keys(str(row[0]))
 
         #waiting for sku popup, will not post unless popup is selected and clicked
@@ -51,7 +51,7 @@ with open('order.csv', newline='') as csvfile:
         )
         element.click()
 
-        #clears auto-fill from quantity box and fills from file
+        #clears auto-fill from quantity box and adds quantity from text box
         qty = driver.find_element_by_xpath("//*[@id='qty" + str(i) + "']")
         qty.clear()
         qty.send_keys(str(row[1]))
@@ -59,4 +59,4 @@ with open('order.csv', newline='') as csvfile:
         i+=1
 
 #clicking add all to cart button
-#driver.find_element_by_class_name("add-all").click()
+driver.find_element_by_class_name("add-all").click()
